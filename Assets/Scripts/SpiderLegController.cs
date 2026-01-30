@@ -1,5 +1,6 @@
 
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class SpiderLegController : MonoBehaviour
@@ -20,6 +21,8 @@ public class SpiderLegController : MonoBehaviour
     private Vector3 defaultLocalOffset;
     private Vector3 FootPose;
     private Vector3 desairedFootPose;
+    private Vector3 lastBoadyPos;
+    private Vector3 bodyVelocity;
 
     // Raycasting variables
     private Vector3 rayOrigin; 
@@ -39,18 +42,29 @@ public class SpiderLegController : MonoBehaviour
         }
         defaultLocalOffset = boddyTrasform.InverseTransformPoint(footIkTarget.position);
         FootPose = footIkTarget.position;
-      
+        lastBoadyPos = boddyTrasform.position;
 
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        bodyVelocity = (boddyTrasform.position - lastBoadyPos) / Time.deltaTime;
+        lastBoadyPos = boddyTrasform.position;
+
+        Vector3 moveDirection = bodyVelocity.normalized;
+        float speed = bodyVelocity.magnitude;
+
+        Vector3 velocityOffset = moveDirection * speed * 0.1f;
+        velocityOffset = Vector3.ClampMagnitude(velocityOffset, stepDistance);
+
+
         if (isSteping)
             return;
-
-        desairedFootPose = boddyTrasform.TransformPoint(defaultLocalOffset + Vector3.forward);
+        
+       
+        desairedFootPose = boddyTrasform.TransformPoint(defaultLocalOffset + Vector3.forward) + velocityOffset;
         
 
         if( Vector3.Distance(FootPose, desairedFootPose) > stepThreshold)

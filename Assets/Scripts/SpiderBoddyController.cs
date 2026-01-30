@@ -1,8 +1,10 @@
 using UnityEngine;
-
-public class PlayerController : MonoBehaviour
+using System.Collections.Generic;
+public class SpiderBoddyController : MonoBehaviour
 {
     [SerializeField] float speed = 5f;
+    [SerializeField] float boddyHeightOffset = 1.0f;
+    [SerializeField] List<SpiderLegController> legControllers;
     Rigidbody rb;
     Vector3 moveInput = Vector3.zero;
 
@@ -24,6 +26,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+       MoveSpider();
+        // Update boddy height based on leg positions
+
+    }
+
+
+    private void MoveSpider()
+    {
         if (rb == null) return;
 
         // Read input in Update so we don't miss input between physics frames
@@ -38,14 +48,10 @@ public class PlayerController : MonoBehaviour
         {
             moveInput.Normalize();
         }
-    }
-
-    void FixedUpdate()
-    {
-        if (rb == null) return;
 
         // Move using Rigidbody.MovePosition to respect physics & collisions
         Vector3 newPosition = rb.position + moveInput * speed * Time.fixedDeltaTime;
         rb.MovePosition(newPosition);
     }
+    
 }
