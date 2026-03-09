@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7399d5dfc317b994891b149d6d92edd8
+guid: a1c213e4adc0e14408dc96b39e2ce9e1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: spider
-    second: {fileID: 2100000, guid: d6746a5d9e8b18841a8f019dfb9acd4f, type: 2}
+      name: Material
+    second: {fileID: 2100000, guid: 8d86b3acf55217e4e8920bafccf70b8b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: spider.legs
-    second: {fileID: 2100000, guid: 786f6ddce96b8f542902354da715416b, type: 2}
+      name: Material.003
+    second: {fileID: 2100000, guid: f5ad6593a851b284ba6402ad4d008299, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
