@@ -1,5 +1,6 @@
 using UnityEngine;
 
+ public enum GaitGroup { A, B }
 public class BodyController : MonoBehaviour
 {
 
@@ -8,6 +9,11 @@ public class BodyController : MonoBehaviour
     public float alignSpeed = 5f;
     public float moveSpeed = 5f;
     public float rotSpeed = 5f;
+
+     // 0 = Group A stepping, 1 = Group B stepping
+    private int activeGaitGroup = 0;
+    private float gaitTimer = 0f;
+    [SerializeField] float gaitSwitchInterval = 0.3f; // tune this
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,6 +26,7 @@ public class BodyController : MonoBehaviour
         AlignPos();
         AlignRot();
         Move();
+        GaiteMonitor();
     }
 
     private void Move()
@@ -27,8 +34,8 @@ public class BodyController : MonoBehaviour
         float inputY = Input.GetAxis("Vertical");
         float inputX = Input.GetAxis("Horizontal");
 
-        transform.Translate(transform.forward * inputY * moveSpeed * Time.deltaTime);
-        transform.Rotate(transform.up * inputX * rotSpeed * Time.deltaTime);
+        transform.Translate(Vector3.forward * inputY * moveSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.up * inputX * rotSpeed * Time.deltaTime);
     }
     private void AlignPos()
     {
@@ -59,5 +66,19 @@ public class BodyController : MonoBehaviour
 
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * alignSpeed);
 
+    }
+
+    private void GaiteMonitor()
+    {
+         gaitTimer += Time.deltaTime;
+        if (gaitTimer >= gaitSwitchInterval)
+        {
+            gaitTimer = 0f;
+            activeGaitGroup = 1 - activeGaitGroup; // toggle 0↔1
+        }
+    }
+    public bool IsGroupAllowedToStep(GaitGroup group)
+    {
+        return (int)group == activeGaitGroup;
     }
 }

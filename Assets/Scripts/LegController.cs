@@ -5,22 +5,27 @@ public class LegController : MonoBehaviour
 {
 
     [SerializeField] Transform body;
-    [SerializeField] LegController pairedLeg;
+    [SerializeField] BodyController bodyController ;
     public LayerMask groundLayer;
     public float maxDestence =2f;
     public float rayCastDist = 2f;
     public float stepSpeed=1f;
     public float stepHeight = 1f;
+    public AudioClip footAudioClip;
     Vector3 desiredFootPos;
     RaycastHit raycast;
-
+    AudioSource source;
     bool isStepping =false;
 
     public bool IsGrounded => !isStepping;
+   
+    [SerializeField] public GaitGroup gaitGroup;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         desiredFootPos = body.InverseTransformPoint(transform.position);
+        source = GetComponent<AudioSource>();
+        
     }
 
     // Update is called once per frame
@@ -40,7 +45,7 @@ public class LegController : MonoBehaviour
             if (Physics.Raycast(rayStart, Vector3.down, out raycast, 10f, groundLayer))
             {
                 Debug.DrawRay(rayStart, Vector3.down* raycast.distance, Color.red);
-                if(!isStepping && pairedLeg.IsGrounded)
+                if(!isStepping && bodyController.IsGroupAllowedToStep(gaitGroup))
                 StartCoroutine(MoveFoot(transform.position,raycast.point));
             }
         }
@@ -60,7 +65,8 @@ public class LegController : MonoBehaviour
             transform.position = pos;
             yield return null; 
         }
-
+        transform.position = endPos;
+        source.PlayOneShot(footAudioClip);
         isStepping = false;
     }
 
